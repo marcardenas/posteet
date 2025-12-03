@@ -1,0 +1,8 @@
+auth
+aiosqlite
+asyncpg
+databases[postgresql]
+fastapi[standard]
+fastapi-users[sqlalchemy]
+pyjwt
+requests
