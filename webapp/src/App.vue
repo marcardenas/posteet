@@ -1,27 +1,37 @@
 <template>
-  <div class="container">
-    <main class="postit">
-      <component :is="currentView"
-             v-on:login-success="onLoginSuccess"
-             v-on:register-success="onRegisterSuccess"
-             v-on:notify="handleNotify"
-             v-on:switch="setMode"
-             v-on:logout="logout"
-             v-bind="componentProps"
+  <div>
+    <!-- If authenticated show full-screen dashboard (no post-it) -->
+    <div v-if="isAuthenticated" class="dashboard-fullscreen">
+      <component :is="Dashboard"
+                 v-on:logout="logout"
+                 v-bind="componentProps"
       />
+    </div>
 
-      <!-- Toast notifications -->
-      <div class="toasts" aria-live="polite">
-        <div v-for="t in toasts" :key="t.id" :class="['toast', t.type]">
-          <div class="toast-body">
-            <strong v-if="t.type === 'success'">OK</strong>
-            <strong v-else>Error</strong>
-            <span class="msg">{{ t.message }}</span>
-          </div>
-          <button class="close" @click="removeToast(t.id)">×</button>
+    <!-- If not authenticated show the post-it centered form -->
+    <div v-else class="container">
+      <main class="postit">
+        <component :is="currentView"
+                   v-on:login-success="onLoginSuccess"
+                   v-on:register-success="onRegisterSuccess"
+                   v-on:notify="handleNotify"
+                   v-on:switch="setMode"
+                   v-bind="componentProps"
+        />
+      </main>
+    </div>
+
+    <!-- Toast notifications (global) -->
+    <div class="toasts" aria-live="polite">
+      <div v-for="t in toasts" :key="t.id" :class="['toast', t.type]">
+        <div class="toast-body">
+          <strong v-if="t.type === 'success'">OK</strong>
+          <strong v-else>Error</strong>
+          <span class="msg">{{ t.message }}</span>
         </div>
+        <button class="close" @click="removeToast(t.id)">×</button>
       </div>
-    </main>
+    </div>
   </div>
 </template>
 
