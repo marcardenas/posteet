@@ -1,0 +1,15 @@
+#!/bin/sh
+set -e
+
+: "${WEBAPP_HOST:=webapp}"
+: "${WEBAPP_PORT:=5173}"
+: "${API_HOST:=api}"
+: "${API_PORT:=8080}"
+: "${SERVER_NAME:=localhost}"
+
+# Reemplaza las variables en la plantilla y escribe la config final
+envsubst '${WEBAPP_HOST} ${WEBAPP_PORT} ${API_HOST} ${API_PORT} ${SERVER_NAME}' \
+  < /etc/nginx/nginx.conf.template > /etc/nginx/nginx.conf
+
+# Ejecutar nginx en primer plano
+nginx -g 'daemon off;'

@@ -1,11 +1,23 @@
+import os
 from typing import AsyncGenerator
 
 from fastapi import Depends
 from fastapi_users.db import SQLAlchemyBaseUserTableUUID, SQLAlchemyUserDatabase
-from sqlalchemy.ext.asyncio import AsyncSession, create_async_engine, async_sessionmaker
+from sqlalchemy.ext.asyncio import (
+    AsyncSession,
+    create_async_engine,
+    async_sessionmaker,
+)
 from sqlalchemy.ext.declarative import DeclarativeMeta, declarative_base
 
-DATABASE_URL = "postgresql+asyncpg://db:5432/posteet_db?user=medallerox&password=medallero123=="
+
+database_name = os.getenv("POSTGRES_DB", "posteet_db")
+database_user = os.getenv("POSTGRES_USER", "user")
+database_password = os.getenv("POSTGRES_PASSWORD", "pass")
+database_port = os.getenv("POSTGRES_PORT", "5432")
+database_host = os.getenv("POSTGRES_HOST", "db")
+
+DATABASE_URL = f"postgresql+asyncpg://{database_user}:{database_password}@{database_host}:{database_port}/{database_name}"
 Base: DeclarativeMeta = declarative_base()
 
 
