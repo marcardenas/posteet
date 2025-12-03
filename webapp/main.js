@@ -2,7 +2,7 @@ const { createApp, ref } = Vue;
 
 createApp({
   setup() {
-    const form = ref({ username: '', password: '' });
+    const form = ref({ email: '', password: '' });
     const result = ref('');
 
     function onSubmit() {
