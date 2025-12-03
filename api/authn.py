@@ -1,8 +1,8 @@
 from fastapi import Depends, FastAPI
 
-from app.db import User, create_db_and_tables
-from app.schemas import UserCreate, UserRead, UserUpdate
-from app.users import auth_backend, current_active_user, fastapi_users
+from api.db import User, create_db_and_tables
+from api.schemas import UserCreate, UserRead, UserUpdate
+from api.users import auth_backend, current_active_user, fastapi_users
 
 
 def register_routes(app: FastAPI):

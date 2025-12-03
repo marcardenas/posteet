@@ -1,4 +1,4 @@
-from app.authn import register_routes
+from api.authn import register_routes
 
 from fastapi import FastAPI
 
