@@ -9,8 +9,6 @@
                     <input v-model="form.email" type="email" placeholder="tu@email.com" required />
                 </label>
 
-
-
                 <label>
                     Contraseña
                     <input v-model="form.password" type="password" placeholder="••••••" required />
@@ -125,11 +123,28 @@ function onSubmit() {
             return
         }
 
-        result.value = JSON.stringify({
-            message: 'Simulación de login — conecta el API para funcionamiento real',
-            payload: { email: form.email }
-        }, null, 2)
-        form.password = ''
+        const login_endpoint = `${endpoint.value}/auth/jwt/login`
+
+        axios.post(login_endpoint, new URLSearchParams({
+            username: form.email,
+            password: form.password,
+        }), { headers: { 'Content-Type': 'application/x-www-form-urlencoded' } }).then(response => {
+            // success: show toast, clear fields and redirect to home
+            addToast('success', 'Inicio de sesión exitoso. Redirigiendo a inicio...')
+            result.value = JSON.stringify({
+                message: 'Inicio de sesión exitoso',
+                payload: response.data
+            }, null, 2)
+            form.password = ''
+            setTimeout(() => { window.location.href = '/' }, 1200)
+        }).catch(error => {
+            const errMsg = error.response && error.response.data ? (error.response.data.detail || JSON.stringify(error.response.data)) : error.message
+            addToast('error', 'Error en el inicio de sesión: ' + errMsg)
+            result.value = JSON.stringify({
+                message: 'Error en el inicio de sesión',
+                error: error.response ? error.response.data : error.message
+            }, null, 2)
+        })
     }
 }
 
