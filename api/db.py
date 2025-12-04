@@ -1,5 +1,6 @@
 import os
 from typing import AsyncGenerator
+from pymongo import MongoClient
 
 from fastapi import Depends
 from fastapi_users.db import SQLAlchemyBaseUserTableUUID, SQLAlchemyUserDatabase
@@ -18,6 +19,8 @@ database_port = os.getenv("POSTGRES_PORT", "5432")
 database_host = os.getenv("POSTGRES_HOST", "db")
 
 DATABASE_URL = f"postgresql+asyncpg://{database_user}:{database_password}@{database_host}:{database_port}/{database_name}"
+MONGODB_URL = f"mongodb://admin:password@mongodb:27017/mongodb?authSource=admin"
+
 Base: DeclarativeMeta = declarative_base()
 
 
@@ -43,3 +46,7 @@ async def get_async_session() -> AsyncGenerator[AsyncSession, None]:
 
 async def get_user_db(session: AsyncSession = Depends(get_async_session)):
     yield SQLAlchemyUserDatabase(session, User)
+
+
+mongo_client = MongoClient(MONGODB_URL)
+mongo_database = mongo_client["posteet_db"]

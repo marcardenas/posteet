@@ -5,4 +5,5 @@ databases[postgresql]
 fastapi[standard]
 fastapi-users[sqlalchemy]
 pyjwt
+pymongo
 requests
