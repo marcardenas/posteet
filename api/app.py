@@ -71,9 +71,26 @@ async def read_posteet(id: int, user: User = Depends(current_active_user)):
     return json.loads(doc_json)
 
 
-@app.put("/posteet/{id}", response_model=PostitContentModel)
-async def update_posteet(id: int):
-    return {"message": "Posteet updated successfully."}
+@app.put(
+    "/posteet/{id}",
+    status_code=status.HTTP_200_OK,
+    response_model=PostitResponseModel,
+)
+async def update_posteet(
+    id: int, item: PostitContentModel, user: User = Depends(current_active_user)
+):
+    user_content = mongo_database[str(user.id)]
+    query = {"postit_id": id}
+    new_values = {"$set": item.model_dump()}
+
+    result = user_content.update_one(query, new_values)
+
+    if result.matched_count == 0:
+        return JSONResponse(
+            status_code=404, content={"error": "Posteet not found"}
+        )
+
+    return json.loads(bson.json_util.dumps(user_content.find_one(query)))
 
 
 @app.delete("/posteet/{id}", status_code=status.HTTP_204_NO_CONTENT)
