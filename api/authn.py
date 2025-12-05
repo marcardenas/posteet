@@ -38,7 +38,12 @@ class TokenToCookieMiddleware(BaseHTTPMiddleware):
                 media_type=response.media_type,
             )
 
-        token = data.get("access_token") or data.get("token")
+        token = (
+            (data.get("access_token") or data.get("token"))
+            if isinstance(data, dict)
+            else None
+        )
+
         if not token:
             # no token to extract
             return Response(

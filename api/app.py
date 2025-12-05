@@ -35,12 +35,33 @@ async def create_message(
     return payload
 
 
+@app.get(
+    "/posteet",
+    status_code=status.HTTP_200_OK,
+    response_model=list[PostitContentModel],
+)
+async def read_posteet_list(user: User = Depends(current_active_user)):
+    user_content = mongo_database[str(user.id)]
+    docs = user_content.find()
+
+    if not docs:
+        return JSONResponse(
+            status_code=404, content={"error": "No Posteets found"}
+        )
+
+    docs_json = bson.json_util.dumps(docs)
+
+    return json.loads(docs_json)
+
+
 @app.get("/posteet/{id}", status_code=status.HTTP_200_OK)
 async def read_posteet(id: int, user: User = Depends(current_active_user)):
     user_content = mongo_database[str(user.id)]
     doc = user_content.find_one({"postit_id": id})
     if not doc:
-        return JSONResponse(status_code=404, content={"error": "Posteet not found"})
+        return JSONResponse(
+            status_code=404, content={"error": "Posteet not found"}
+        )
 
     doc_json = bson.json_util.dumps(doc)
     return json.loads(doc_json)
